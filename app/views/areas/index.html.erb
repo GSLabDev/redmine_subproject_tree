@@ -1,24 +1,21 @@
 <%@html = "<ul id='sub'>"
 @notFirst = false%>
 <%
-def lol(projects)
+def display_sub_projects(projects)
 if(@notFirst)
   @html << '<ul>'
 end
 @notFirst=true
    projects.each do |project|
-    @html << '<li>'
-    @html << '<div class="hitarea"></div>' if project.children.any?
-    @html << '<a href="/projects/'+project.identifier+'">'+project.name+'</a>&nbsp;'
-    @html << '('+((project.custom_field_values.select{|obj|obj.custom_field_id == 3}).first.value)+')' rescue ""
-if project.children.any?
-  lol project.children
-end
-    @html << '</li>'
-      end
-@html << '</ul>'
-
-
+     @html << '<li>'
+     @html << '<div class="hitarea"></div>' if project.children.any?
+     @html << '<a href="/projects/'+project.identifier+'">'+project.name+'</a>&nbsp;'
+     if project.children.any?
+        display_sub_projects project.children
+     end
+     @html << '</li>'
+   end
+   @html << '</ul>'
 end
 %>
 
@@ -31,7 +28,7 @@ end
 		<a href="#" title="Toggle the tree below, opening closed branches, closing open branches">Toggle All</a>
 </div>
 
-<%lol @projects%>
+<%display_sub_projects @projects%>
 
 <%=raw @html-%>
 <style>
